@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Multiplication Visualization</title>
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --text-color: #333;
+            --matrix-bracket-color: #333;
+            --highlight-row: #e3f2fd;
+            --highlight-col: #fce4ec;
+            --highlight-result: #e8f5e9;
+            --cell-border: #ccc;
+            --primary-color: #2196f3;
+            --secondary-color: #e91e63;
+            --result-color: #4caf50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .controls {
+            margin-bottom: 30px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            background-color: #333;
+            color: white;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Container for the entire equation */
+        .equation-container {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        /* Matrix styling */
+        .matrix-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .matrix-label {
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .matrix {
+            display: grid;
+            gap: 5px;
+            padding: 10px;
+            position: relative;
+        }
+
+        /* Brackets for matrices */
+        .matrix::before, .matrix::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 10px;
+            border: 2px solid var(--matrix-bracket-color);
+        }
+        .matrix::before {
+            left: -5px;
+            border-right: none;
+        }
+        .matrix::after {
+            right: -5px;
+            border-left: none;
+        }
+
+        .cell {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--cell-border);
+            border-radius: 4px;
+            background: white;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .symbol {
+            font-size: 24px;
+            font-weight: bold;
+            color: #666;
+        }
+
+        /* Explanation Box */
+        .explanation {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            min-height: 80px;
+        }
+
+        .math-display {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.1rem;
+            margin-top: 10px;
+            min-height: 1.5em;
+            color: #444;
+        }
+
+        /* Animation States */
+        .cell.active-row {
+            background-color: var(--primary-color);
+            color: white;
+            transform: scale(1.1);
+            border-color: var(--primary-color);
+        }
+
+        .cell.active-col {
+            background-color: var(--secondary-color);
+            color: white;
+            transform: scale(1.1);
+            border-color: var(--secondary-color);
+        }
+
+        .cell.active-result {
+            background-color: var(--result-color);
+            color: white;
+            transform: scale(1.15);
+            font-weight: bold;
+        }
+
+        .cell.highlight-target {
+            border: 2px dashed var(--result-color);
+            background-color: var(--highlight-result);
+        }
+        
+        /* Grid specific definitions */
+        #matrix-a { grid-template-columns: repeat(3, 1fr); } /* 2x3 */
+        #matrix-b { grid-template-columns: repeat(2, 1fr); } /* 3x2 */
+        #matrix-c { grid-template-columns: repeat(2, 1fr); } /* 2x2 */
+
+        @media (max-width: 768px) {
+            .equation-container {
+                flex-direction: column;
+                gap: 30px;
+            }
+            .symbol {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Matrix Multiplication</h1>
+    
+    <div class="controls">
+        <button id="btn-start" onclick="startAnimation()">Start Animation</button>
+        <button id="btn-reset" onclick="resetGrid()">Reset</button>
+    </div>
+
+    <div class="equation-container">
+        <!-- Matrix A -->
+        <div class="matrix-wrapper">
+            <span class="matrix-label">Matrix A (2×3)</span>
+            <div id="matrix-a" class="matrix">
+                <!-- Generated by JS -->
+            </div>
+        </div>
+
+        <div class="symbol">×</div>
+
+        <!-- Matrix B -->
+        <div class="matrix-wrapper">
+            <span class="matrix-label">Matrix B (3×2)</span>
+            <div id="matrix-b" class="matrix">
+                <!-- Generated by JS -->
+            </div>
+        </div>
+
+        <div class="symbol">=</div>
+
+        <!-- Matrix C (Result) -->
+        <div class="matrix-wrapper">
+            <span class="matrix-label">Result (2×2)</span>
+            <div id="matrix-c" class="matrix">
+                <!-- Generated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <div class="explanation">
+        <div id="status-text">Click "Start Animation" to visualize the calculation.</div>
+        <div id="math-display" class="math-display"></div>
+    </div>
+
+    <script>
+        // Data Definition
+        const dataA = [
+            [1, 2, 3],
+            [4, 5, 6]
+        ];
+
+        const dataB = [
+            [7, 8],
+            [9, 1],
+            [2, 3]
+        ];
+
+        // Result dimensions: A rows x B cols
+        const resultRows = dataA.length;
+        const resultCols = dataB[0].length;
+
+        // DOM Elements
+        const elMatrixA = document.getElementById('matrix-a');
+        const elMatrixB = document.getElementById('matrix-b');
+        const elMatrixC = document.getElementById('matrix-c');
+        const elStatus = document.getElementById('status-text');
+        const elMath = document.getElementById('math-display');
+        const btnStart = document.getElementById('btn-start');
+
+        let isAnimating = false;
+        let animationController = new AbortController();
+
+        // Initialize Grids
+        function init() {
+            renderMatrix(elMatrixA, dataA, 'a');
+            renderMatrix(elMatrixB, dataB, 'b');
+            createResultMatrix(elMatrixC, resultRows, resultCols);
+        }
+
+        function renderMatrix(container, data, prefix) {
+            container.innerHTML = '';
+            data.forEach((row, rIndex) => {
+                row.forEach((val, cIndex) => {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.id = `cell-${prefix}-${rIndex}-${cIndex}`;
+                    cell.textContent = val;
+                    container.appendChild(cell);
+                });
+            });
+        }
+
+        function createResultMatrix(container, rows, cols) {
+            container.innerHTML = '';
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.id = `cell-c-${r}-${c}`;
+                    cell.textContent = '?';
+                    container.appendChild(cell);
+                }
+            }
+        }
+
+        // Helper to delay execution
+        const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+        function clearHighlights() {
+            document.querySelectorAll('.cell').forEach(el => {
+                el.classList.remove('active-row', 'active-col', 'active-result', 'highlight-target');
+            });
+        }
+
+        async function startAnimation() {
+            if (isAnimating) return;
+            
+            // FIX: Reset grid visuals BEFORE setting isAnimating to true.
+            // This prevents resetGrid from cancelling the new animation immediately.
+            resetGrid(false); 
+
+            isAnimating = true;
+            btnStart.disabled = true;
+            
+            // Reset controller for cancellation
+            animationController = new AbortController();
+            const signal = animationController.signal;
+
+            try {
+                // Iterate through rows of A
+                for (let r = 0; r < resultRows; r++) {
+                    // Iterate through columns of B
+                    for (let c = 0; c < resultCols; c++) {
+                        if (signal.aborted) throw new Error("Cancelled");
+
+                        // 1. Highlight target cell in C
+                        const targetCell = document.getElementById(`cell-c-${r}-${c}`);
+                        targetCell.classList.add('highlight-target');
+                        
+                        elStatus.textContent = `Calculating Row ${r+1} of A • Column ${c+1} of B`;
+                        
+                        let calculationText = "";
+                        let sum = 0;
+                        let terms = [];
+
+                        // 2. Perform Dot Product
+                        // We iterate through the common dimension (cols of A / rows of B)
+                        const commonDim = dataA[0].length; 
+                        
+                        for (let k = 0; k < commonDim; k++) {
+                            if (signal.aborted) throw new Error("Cancelled");
+
+                            // Highlight current pair
+                            const cellA = document.getElementById(`cell-a-${r}-${k}`);
+                            const cellB = document.getElementById(`cell-b-${k}-${c}`);
+                            
+                            cellA.classList.add('active-row');
+                            cellB.classList.add('active-col');
+
+                            const valA = dataA[r][k];
+                            const valB = dataB[k][c];
+                            const product = valA * valB;
+                            sum += product;
+                            
+                            terms.push(`(${valA}×${valB})`);
+                            
+                            // Live update math
+                            elMath.textContent = `${terms.join(' + ')}`;
+
+                            await sleep(800);
+
+                            // Unhighlight pair
+                            cellA.classList.remove('active-row');
+                            cellB.classList.remove('active-col');
+                        }
+
+                        // 3. Show Result
+                        elMath.textContent = `${terms.join(' + ')} = ${sum}`;
+                        targetCell.textContent = sum;
+                        targetCell.classList.remove('highlight-target');
+                        targetCell.classList.add('active-result');
+                        
+                        await sleep(1500); // Pause to let user see result
+                        targetCell.classList.remove('active-result');
+                    }
+                }
+                
+                elStatus.textContent = "Calculation Complete!";
+                elMath.textContent = "";
+
+            } catch (err) {
+                if (err.message !== "Cancelled") console.error(err);
+            } finally {
+                isAnimating = false;
+                btnStart.disabled = false;
+            }
+        }
+
+        function resetGrid(fullReset = true) {
+            // If an animation is running, this function stops it.
+            if (isAnimating) {
+                animationController.abort();
+                isAnimating = false;
+                btnStart.disabled = false;
+            }
+            clearHighlights();
+            createResultMatrix(elMatrixC, resultRows, resultCols);
+            if (fullReset) {
+                elStatus.textContent = 'Click "Start Animation" to visualize the calculation.';
+                elMath.textContent = '';
+            }
+        }
+
+        // Run on load
+        init();
+
+    </script>
+</body>
+</html>
