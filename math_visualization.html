@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Visualization Suite</title>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --sidebar-bg: #2d2d2d;
+            --text-color: #e0e0e0;
+            --accent-color: #4caf50;
+            --secondary-accent: #2196f3;
+            --panel-bg: #333;
+            --border-color: #444;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        .nav-title {
+            padding: 0 20px 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: #aaa;
+            padding: 15px 20px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-btn:hover {
+            background-color: rgba(255,255,255,0.05);
+            color: white;
+        }
+
+        .nav-btn.active {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: white;
+            border-left-color: var(--accent-color);
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .visualizer-section {
+            display: none;
+            height: 100%;
+            flex-direction: column;
+        }
+
+        .visualizer-section.active {
+            display: flex;
+        }
+
+        .header {
+            margin-bottom: 20px;
+        }
+
+        .header h2 { margin: 0 0 10px 0; }
+        .header p { color: #aaa; margin: 0; }
+
+        /* Canvas Containers */
+        .canvas-container {
+            flex: 1;
+            background-color: var(--panel-bg);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        canvas {
+            background-color: #222;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        /* Controls Area */
+        .controls {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--panel-bg);
+            border-radius: 8px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover { opacity: 0.9; }
+        
+        input[type="range"] {
+            width: 150px;
+        }
+
+        .stat-box {
+            font-family: monospace;
+            background: rgba(0,0,0,0.3);
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; flex-direction: row; overflow-x: auto; padding: 10px; }
+            .nav-title { display: none; }
+            .nav-btn { white-space: nowrap; padding: 10px 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="nav-title">Math Visualizer</div>
+        <button class="nav-btn active" onclick="switchTab('linalg', this)">Linear Algebra</button>
+        <button class="nav-btn" onclick="switchTab('calc', this)">Calculus</button>
+        <button class="nav-btn" onclick="switchTab('stats', this)">Statistics</button>
+        <button class="nav-btn" onclick="switchTab('trig', this)">Trigonometry</button>
+        <button class="nav-btn" onclick="switchTab('diffeq', this)">Diff. Equations</button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+        <!-- 1. LINEAR ALGEBRA: Grid Transformation -->
+        <div id="linalg" class="visualizer-section active">
+            <div class="header">
+                <h2>Linear Algebra: 2D Transformation</h2>
+                <p>Visualize how a matrix transforms the coordinate grid. <span style="color:#ff6b6b">Red is i-hat</span>, <span style="color:#4ecdc4">Teal is j-hat</span>.</p>
+            </div>
+            <div class="canvas-container">
+                <canvas id="canvas-linalg" width="600" height="400"></canvas>
+            </div>
+            <div class="controls">
+                <label>Matrix M = </label>
+                [ <input type="number" id="m11" value="1" step="0.5" style="width:40px"> <input type="number" id="m12" value="1" step="0.5" style="width:40px"> ]
+                [ <input type="number" id="m21" value="0" step="0.5" style="width:40px"> <input type="number" id="m22" value="1" step="0.5" style="width:40px"> ]
+                <button onclick="linalg.animate()">Apply Transformation</button>
+                <button onclick="linalg.reset()" style="background-color:#555">Reset</button>
+            </div>
+        </div>
+
+        <!-- 2. CALCULUS: Derivative Slope -->
+        <div id="calc" class="visualizer-section">
+            <div class="header">
+                <h2>Calculus: The Derivative</h2>
+                <p>Move the mouse to see the tangent line (slope) at any point on the curve f(x) = sin(x) * x.</p>
+            </div>
+            <div class="canvas-container">
+                <canvas id="canvas-calc" width="600" height="400"></canvas>
+            </div>
+            <div class="controls">
+                <div class="stat-box" id="calc-stats">x: 0, Slope: 0</div>
+                <label style="margin-left: 20px;">Functions:</label>
+                <button onclick="calc.setFunc('sin')" style="background-color:#333; border:1px solid #555">sin(x)</button>
+                <button onclick="calc.setFunc('poly')" style="background-color:#333; border:1px solid #555">0.1x²</button>
+                <button onclick="calc.setFunc('complex')" style="background-color:#333; border:1px solid #555">sin(x)*0.5x</button>
+            </div>
+        </div>
+
+        <!-- 3. STATISTICS: Galton Board -->
+        <div id="stats" class="visualizer-section">
+            <div class="header">
+                <h2>Statistics: Galton Board</h2>
+                <p>Demonstrating the Central Limit Theorem and Normal Distribution using falling particles.</p>
+            </div>
+            <div class="canvas-container">
+                <canvas id="canvas-stats" width="600" height="400"></canvas>
+            </div>
+            <div class="controls">
+                <button onclick="stats.dropBall()">Drop 1 Ball</button>
+                <button onclick="stats.toggleStream()" id="btn-stream">Start Stream</button>
+                <button onclick="stats.reset()" style="background-color:#555">Clear</button>
+                <div class="stat-box">Balls: <span id="ball-count">0</span></div>
+            </div>
+        </div>
+
+        <!-- 4. TRIGONOMETRY: Unit Circle -->
+        <div id="trig" class="visualizer-section">
+            <div class="header">
+                <h2>Trigonometry: The Sine Wave</h2>
+                <p>The relationship between the Unit Circle (left) and the Sine graph (right).</p>
+            </div>
+            <div class="canvas-container">
+                <canvas id="canvas-trig" width="600" height="400"></canvas>
+            </div>
+            <div class="controls">
+                <button onclick="trig.toggle()">Play/Pause</button>
+                <label>Speed:</label>
+                <input type="range" min="1" max="10" value="2" oninput="trig.speed = this.value/2">
+            </div>
+        </div>
+
+        <!-- 5. DIFF EQ: Slope Field -->
+        <div id="diffeq" class="visualizer-section">
+            <div class="header">
+                <h2>Differential Equations: Slope Fields</h2>
+                <p>Visualizing y' = sin(x) + cos(y). Particles follow the flow of the field.</p>
+            </div>
+            <div class="canvas-container">
+                <canvas id="canvas-diffeq" width="600" height="400"></canvas>
+            </div>
+            <div class="controls">
+                <button onclick="diffeq.spawnParticles()">Spawn Particles</button>
+                <button onclick="diffeq.clearParticles()" style="background-color:#555">Clear Particles</button>
+                <label style="margin-left:15px; color:#888;">(Click canvas to spawn)</label>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function switchTab(id, el) {
+            document.querySelectorAll('.visualizer-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            const trigger = el || window.event?.currentTarget;
+            if (trigger) trigger.classList.add('active');
+
+            const instance = window[id];
+            if(instance && instance.resize) instance.resize();
+        }
+
+        const linalg = {
+            canvas: document.getElementById('canvas-linalg'),
+            ctx: document.getElementById('canvas-linalg').getContext('2d'),
+            targetMatrix: { a:1, b:0, c:0, d:1 },
+            currentMatrix: { a:1, b:0, c:0, d:1 },
+            animating: false,
+
+            init() {
+                this.resize();
+                this.draw();
+            },
+            resize() {
+                this.width = this.canvas.width;
+                this.height = this.canvas.height;
+                this.originX = this.width / 2;
+                this.originY = this.height / 2;
+                this.scale = 40;
+                this.draw();
+            },
+            reset() {
+                this.targetMatrix = {a:1, b:0, c:0, d:1};
+                this.animate();
+                document.getElementById('m11').value = 1; document.getElementById('m12').value = 0;
+                document.getElementById('m21').value = 0; document.getElementById('m22').value = 1;
+            },
+            animate() {
+                this.targetMatrix = {
+                    a: parseFloat(document.getElementById('m11').value) || 1,
+                    c: parseFloat(document.getElementById('m12').value) || 0,
+                    b: parseFloat(document.getElementById('m21').value) || 0,
+                    d: parseFloat(document.getElementById('m22').value) || 1
+                };
+                this.animating = true;
+                this.loop();
+            },
+            loop() {
+                if(!this.animating) return;
+                const lerp = (start, end, amt) => (1 - amt) * start + amt * end;
+                const speed = 0.05;
+
+                let diff = 0;
+                ['a','b','c','d'].forEach(k => {
+                    this.currentMatrix[k] = lerp(this.currentMatrix[k], this.targetMatrix[k], speed);
+                    diff += Math.abs(this.currentMatrix[k] - this.targetMatrix[k]);
+                });
+
+                this.draw();
+
+                if(diff < 0.001) {
+                    this.animating = false;
+                    this.currentMatrix = {...this.targetMatrix};
+                    this.draw();
+                } else {
+                    requestAnimationFrame(() => this.loop());
+                }
+            },
+            draw() {
+                const ctx = this.ctx;
+                ctx.clearRect(0,0,this.width,this.height);
+                
+                const m = this.currentMatrix;
+                
+                const tx = (x, y) => this.originX + (x * m.a + y * m.c) * this.scale;
+                const ty = (x, y) => this.originY - (x * m.b + y * m.d) * this.scale;
+
+                ctx.lineWidth = 1;
+                
+                ctx.strokeStyle = '#444';
+                for(let i = -10; i <= 10; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(tx(i, -10), ty(i, -10));
+                    ctx.lineTo(tx(i, 10), ty(i, 10));
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(tx(-10, i), ty(-10, i));
+                    ctx.lineTo(tx(10, i), ty(10, i));
+                    ctx.stroke();
+                }
+
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#888';
+                ctx.beginPath(); ctx.moveTo(tx(-10,0), ty(-10,0)); ctx.lineTo(tx(10,0), ty(10,0)); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(tx(0,-10), ty(0,-10)); ctx.lineTo(tx(0,10), ty(0,10)); ctx.stroke();
+
+                const drawArrow = (x, y, color) => {
+                    ctx.strokeStyle = color;
+                    ctx.fillStyle = color;
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.moveTo(this.originX, this.originY);
+                    ctx.lineTo(tx(x,y), ty(x,y));
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.arc(tx(x,y), ty(x,y), 5, 0, Math.PI*2);
+                    ctx.fill();
+                };
+
+                drawArrow(1, 0, '#ff6b6b');
+                drawArrow(0, 1, '#4ecdc4');
+            }
+        };
+
+        const calc = {
+            canvas: document.getElementById('canvas-calc'),
+            ctx: document.getElementById('canvas-calc').getContext('2d'),
+            funcType: 'sin',
+            mouseX: 0,
+
+            init() {
+                this.width = this.canvas.width;
+                this.height = this.canvas.height;
+                this.originX = this.width / 2;
+                this.originY = this.height / 2;
+                this.scaleX = 40;
+                this.scaleY = 40;
+
+                this.canvas.addEventListener('mousemove', e => {
+                    const rect = this.canvas.getBoundingClientRect();
+                    this.mouseX = (e.clientX - rect.left - this.originX) / this.scaleX;
+                    this.draw();
+                });
+                this.draw();
+            },
+            setFunc(type) { this.funcType = type; this.draw(); },
+            f(x) {
+                if(this.funcType === 'sin') return Math.sin(x);
+                if(this.funcType === 'poly') return 0.1 * x * x;
+                if(this.funcType === 'complex') return Math.sin(x) * 0.5 * x;
+                return 0;
+            },
+            df(x) {
+                const h = 0.001;
+                return (this.f(x+h) - this.f(x)) / h;
+            },
+            draw() {
+                const ctx = this.ctx;
+                ctx.clearRect(0,0,this.width, this.height);
+                
+                ctx.strokeStyle = '#555';
+                ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.moveTo(0, this.originY); ctx.lineTo(this.width, this.originY); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(this.originX, 0); ctx.lineTo(this.originX, this.height); ctx.stroke();
+
+                ctx.strokeStyle = '#2196f3';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                for(let px = 0; px < this.width; px++) {
+                    const x = (px - this.originX) / this.scaleX;
+                    const y = this.f(x);
+                    const py = this.originY - y * this.scaleY;
+                    if(px===0) ctx.moveTo(px, py);
+                    else ctx.lineTo(px, py);
+                }
+                ctx.stroke();
+
+                const x0 = this.mouseX;
+                const y0 = this.f(x0);
+                const slope = this.df(x0);
+                
+                const px0 = this.originX + x0 * this.scaleX;
+                const py0 = this.originY - y0 * this.scaleY;
+                
+                ctx.fillStyle = '#ffeb3b';
+                ctx.beginPath(); ctx.arc(px0, py0, 6, 0, Math.PI*2); ctx.fill();
+
+                ctx.strokeStyle = '#ffeb3b';
+                ctx.lineWidth = 2;
+                const xStart = x0 - 3; 
+                const xEnd = x0 + 3;
+                
+                ctx.beginPath();
+                ctx.moveTo(this.originX + xStart * this.scaleX, this.originY - (slope*(xStart-x0)+y0) * this.scaleY);
+                ctx.lineTo(this.originX + xEnd * this.scaleX, this.originY - (slope*(xEnd-x0)+y0) * this.scaleY);
+                ctx.stroke();
+
+                document.getElementById('calc-stats').innerText = `x: ${x0.toFixed(2)}, Slope: ${slope.toFixed(2)}`;
+            },
+            resize() { this.init(); }
+        };
+
+        const stats = {
+            canvas: document.getElementById('canvas-stats'),
+            ctx: document.getElementById('canvas-stats').getContext('2d'),
+            balls: [],
+            bins: [],
+            pegs: [],
+            streaming: false,
+            ballCount: 0,
+
+            init() {
+                this.width = this.canvas.width;
+                this.height = this.canvas.height;
+                this.rows = 10;
+                this.cols = 12;
+                this.startX = this.width/2;
+                this.startY = 50;
+                this.pegSpacing = 25;
+                
+                this.bins = new Array(this.cols + 1).fill(0);
+                
+                this.pegs = [];
+                for(let r=0; r<this.rows; r++) {
+                    for(let c=0; c<=r; c++) {
+                        const x = this.startX + (c - r/2) * this.pegSpacing;
+                        const y = this.startY + r * 25;
+                        this.pegs.push({x,y});
+                    }
+                }
+                this.loop();
+            },
+            resize() { this.init(); },
+            dropBall() {
+                this.balls.push({
+                    x: this.startX,
+                    y: 20,
+                    vx: (Math.random()-0.5),
+                    vy: 0,
+                    active: true
+                });
+                this.ballCount++;
+                document.getElementById('ball-count').innerText = this.ballCount;
+            },
+            toggleStream() {
+                this.streaming = !this.streaming;
+                const btn = document.getElementById('btn-stream');
+                btn.innerText = this.streaming ? "Stop Stream" : "Start Stream";
+                btn.style.background = this.streaming ? "#e91e63" : "#4caf50";
+            },
+            reset() {
+                this.balls = [];
+                this.bins.fill(0);
+                this.ballCount = 0;
+                document.getElementById('ball-count').innerText = 0;
+            },
+            loop() {
+                requestAnimationFrame(() => this.loop());
+                if(document.getElementById('stats').style.display === 'none') return;
+                
+                const ctx = this.ctx;
+                ctx.fillStyle = '#222';
+                ctx.fillRect(0,0,this.width,this.height);
+
+                if(this.streaming && Math.random() < 0.2) this.dropBall();
+
+                ctx.fillStyle = '#666';
+                this.pegs.forEach(p => {
+                    ctx.beginPath(); ctx.arc(p.x, p.y, 3, 0, Math.PI*2); ctx.fill();
+                });
+
+                ctx.fillStyle = '#4caf50';
+                this.balls.forEach(b => {
+                    if(!b.active) return;
+                    
+                    b.vy += 0.2;
+                    b.y += b.vy;
+                    b.x += b.vx;
+
+                    this.pegs.forEach(p => {
+                        const dx = b.x - p.x;
+                        const dy = b.y - p.y;
+                        if(dx*dx + dy*dy < 100 && b.y < p.y) {
+                             b.vy *= -0.5;
+                             b.vx += (Math.random()-0.5) * 4;
+                             b.y = p.y - 10;
+                        }
+                    });
+
+                    if(b.y > this.height - 100) {
+                        b.active = false;
+                        const binWidth = this.pegSpacing;
+                        let binIndex = Math.floor((b.x - (this.startX - (this.rows/2)*binWidth)) / binWidth) + 1;
+                        if(binIndex < 0) binIndex = 0;
+                        if(binIndex >= this.bins.length) binIndex = this.bins.length-1;
+                        this.bins[binIndex]++;
+                    }
+
+                    ctx.beginPath(); ctx.arc(b.x, b.y, 4, 0, Math.PI*2); ctx.fill();
+                });
+
+                this.balls = this.balls.filter(b => b.active);
+
+                const binW = 20;
+                const maxH = 80;
+                const maxVal = Math.max(...this.bins, 1);
+                
+                this.bins.forEach((count, i) => {
+                    const h = (count / maxVal) * maxH;
+                    const x = this.startX + (i - this.bins.length/2) * binW;
+                    const y = this.height - h;
+                    ctx.fillStyle = 'rgba(33, 150, 243, 0.6)';
+                    ctx.fillRect(x, y, binW-2, h);
+                });
+            }
+        };
+
+        const trig = {
+            canvas: document.getElementById('canvas-trig'),
+            ctx: document.getElementById('canvas-trig').getContext('2d'),
+            angle: 0,
+            speed: 1,
+            running: true,
+            wave: [],
+
+            init() {
+                this.resize();
+                this.loop();
+            },
+            resize() {
+                this.width = this.canvas.width;
+                this.height = this.canvas.height;
+            },
+            toggle() { this.running = !this.running; },
+            loop() {
+                requestAnimationFrame(() => this.loop());
+                if(!this.running && this.wave.length > 0) return;
+                
+                const ctx = this.ctx;
+                ctx.clearRect(0,0,this.width, this.height);
+
+                const cx = 100;
+                const cy = this.height/2;
+                const r = 80;
+
+                this.angle -= 0.02 * this.speed;
+                
+                const px = cx + Math.cos(this.angle) * r;
+                const py = cy + Math.sin(this.angle) * r;
+
+                ctx.strokeStyle = '#666';
+                ctx.lineWidth = 2;
+                ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.stroke();
+
+                ctx.strokeStyle = 'white';
+                ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(px, py); ctx.stroke();
+
+                ctx.strokeStyle = '#4ecdc4';
+                ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(px, cy); ctx.stroke();
+                ctx.strokeStyle = '#ff6b6b';
+                ctx.beginPath(); ctx.moveTo(px, cy); ctx.lineTo(px, py); ctx.stroke();
+
+                const graphX = 250;
+                ctx.strokeStyle = '#888';
+                ctx.setLineDash([5,5]);
+                ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(graphX, py); ctx.stroke();
+                ctx.setLineDash([]);
+
+                this.wave.unshift(py);
+                if(this.wave.length > 350) this.wave.pop();
+
+                ctx.strokeStyle = '#ff6b6b';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                for(let i=0; i<this.wave.length; i++) {
+                    ctx.lineTo(graphX + i, this.wave[i]);
+                }
+                ctx.stroke();
+
+                ctx.fillStyle = '#aaa';
+                ctx.fillText("Unit Circle", cx-25, cy + r + 20);
+                ctx.fillText("Sine Wave", graphX+50, cy + r + 20);
+            }
+        };
+
+        const diffeq = {
+            canvas: document.getElementById('canvas-diffeq'),
+            ctx: document.getElementById('canvas-diffeq').getContext('2d'),
+            particles: [],
+
+            init() {
+                this.resize();
+                this.canvas.addEventListener('click', e => {
+                    const rect = this.canvas.getBoundingClientRect();
+                    this.particles.push({
+                        x: e.clientX - rect.left, 
+                        y: e.clientY - rect.top,
+                        age: 0
+                    });
+                });
+                this.loop();
+            },
+            resize() {
+                this.width = this.canvas.width;
+                this.height = this.canvas.height;
+            },
+            slope(x, y) {
+                const sx = (x - this.width/2) / 40;
+                const sy = (y - this.height/2) / 40;
+                return Math.sin(sx) + Math.cos(sy);
+            },
+            spawnParticles() {
+                for(let i=0; i<20; i++) {
+                    this.particles.push({
+                        x: Math.random()*this.width,
+                        y: Math.random()*this.height,
+                        age: 0
+                    });
+                }
+            },
+            clearParticles() { this.particles = []; },
+            loop() {
+                requestAnimationFrame(() => this.loop());
+                if(document.getElementById('diffeq').style.display === 'none') return;
+
+                const ctx = this.ctx;
+                ctx.fillStyle = 'rgba(34, 34, 34, 0.1)';
+                ctx.fillRect(0,0,this.width,this.height);
+                
+                ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+                ctx.lineWidth = 1;
+                const step = 20;
+                for(let x=0; x<this.width; x+=step) {
+                    for(let y=0; y<this.height; y+=step) {
+                        const m = this.slope(x,y);
+                        const len = 8;
+                        const angle = Math.atan(m);
+                        const dx = Math.cos(angle) * len;
+                        const dy = Math.sin(angle) * len;
+                        ctx.beginPath();
+                        ctx.moveTo(x-dx, y-dy);
+                        ctx.lineTo(x+dx, y+dy);
+                        ctx.stroke();
+                    }
+                }
+
+                ctx.fillStyle = '#00e676';
+                this.particles.forEach(p => {
+                    const m = this.slope(p.x, p.y);
+                    const angle = Math.atan(m);
+                    const speed = 2;
+                    p.x += Math.cos(angle) * speed;
+                    p.y += Math.sin(angle) * speed;
+                    
+                    p.age++;
+                    if(p.x < 0 || p.x > this.width || p.y < 0 || p.y > this.height || p.age > 300) {
+                        p.x = Math.random()*this.width;
+                        p.y = Math.random()*this.height;
+                        p.age = 0;
+                    }
+                    ctx.fillRect(p.x, p.y, 2, 2);
+                });
+            }
+        };
+
+        window.onload = () => {
+            linalg.init();
+            calc.init();
+            stats.init();
+            trig.init();
+            diffeq.init();
+        };
+
+    </script>
+</body>
+</html>
