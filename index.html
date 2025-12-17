@@ -285,7 +285,7 @@
   
   
     <li class="md-nav__item">
-      <a href="linear_algebra.md" class="md-nav__link">
+      <a href="linear_algebra.html" class="md-nav__link">
         
   
   
@@ -366,7 +366,7 @@
   
   
     <li class="md-nav__item">
-      <a href="trigonometry.md" class="md-nav__link">
+      <a href="trigonometry.html" class="md-nav__link">
         
   
   
@@ -449,8 +449,446 @@
 
 
 <h1 id="welcome-to-math-notes">Welcome to Math Notes</h1>
-<p>This is a sample page with some math content.</p>
-<p>Here is an equation:</p>
+<p>Explore quick notes, long-form explanations, and interactive visualizations. The featured cards below preview the animations that power topics such as the Matrix Multiplication playground, so you can see the style of each exploration at a glance.</p>
+<style>
+.math-home {
+    font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #1f2d3d;
+    margin-top: 1rem;
+}
+
+.math-home p {
+    line-height: 1.6;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+.math-home .hero {
+    background: linear-gradient(120deg, #1b75d1, #7f5af0);
+    color: #fff;
+    padding: 2rem;
+    border-radius: 18px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.20);
+    margin-bottom: 2.5rem;
+}
+
+.math-home .hero h2 {
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+}
+
+.hero-actions {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.topic-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: #1f2d3d;
+    background: #eef1f5;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.topic-link.primary {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.topic-link:hover {
+    transform: translateY(-2px);
+    background: #dfe8f2;
+}
+
+.topics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+.topic-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 1.5rem;
+    box-shadow: 0 15px 30px rgba(15, 23, 42, 0.08);
+    border: 1px solid #edf2ff;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.topic-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+}
+
+.topic-card h3 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.topic-demo {
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 1rem;
+    min-height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.topic-actions {
+    margin-top: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* Matrix demo */
+.matrix-demo {
+    gap: 0.8rem;
+}
+
+.matrix-demo .matrix {
+    display: grid;
+    grid-template-columns: repeat(2, 26px);
+    gap: 4px;
+    background: #fff;
+    padding: 6px;
+    border-radius: 10px;
+    border: 1px solid #dfe7fb;
+}
+
+.matrix-demo .matrix-b {
+    border-color: #ffd5e4;
+}
+
+.matrix-demo .matrix-c {
+    border-color: #c9f5df;
+}
+
+.matrix-demo span {
+    width: 26px;
+    height: 26px;
+    border-radius: 5px;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #1b75d1;
+    background: #e4efff;
+    animation: flashRow 3.2s ease-in-out infinite;
+}
+
+.matrix-demo .matrix-b span {
+    color: #c2185b;
+    background: #ffe5f0;
+    animation: flashCol 3.2s ease-in-out infinite;
+}
+
+.matrix-demo .matrix-c span {
+    color: #1a7f4b;
+    background: #e7fbf0;
+    animation: flashResult 3.2s ease-in-out infinite;
+}
+
+/* Calculus demo */
+.calculus-demo svg {
+    width: 100%;
+    height: 90px;
+}
+
+.calc-curve {
+    fill: none;
+    stroke: #4cc9f0;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 230;
+    animation: drawCurve 5s ease-in-out infinite alternate;
+}
+
+.calc-point {
+    fill: #ff6f91;
+}
+
+/* Statistics demo */
+.stats-demo {
+    align-items: flex-end;
+}
+
+.stats-demo .bar {
+    width: 24px;
+    border-radius: 6px 6px 0 0;
+    background: linear-gradient(180deg, #7b2ff7, #c64eff);
+    position: relative;
+    animation: growBar 3.2s ease-in-out infinite;
+    animation-delay: calc(var(--index) * 0.2s);
+}
+
+.stats-demo .bar::after {
+    content: attr(data-label);
+    position: absolute;
+    bottom: -1.4rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.65rem;
+    color: #94a3b8;
+}
+
+/* Trigonometry demo */
+.trig-demo {
+    justify-content: flex-start;
+    gap: 2rem;
+}
+
+.unit-circle {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    border: 2px dashed #ffd166;
+    position: relative;
+}
+
+.trig-angle {
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    transform-origin: bottom center;
+    animation: rotateRadius 5s linear infinite;
+}
+
+.trig-angle .radius {
+    width: 2px;
+    height: 55px;
+    background: #ffd166;
+}
+
+.trig-angle .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ef476f;
+    position: absolute;
+    left: -5px;
+    top: -60px;
+    box-shadow: 0 0 10px rgba(239, 71, 111, 0.4);
+}
+
+.sine-graph {
+    width: 80px;
+    height: 60px;
+    border-left: 1px solid #4cc9f0;
+    border-bottom: 1px solid #4cc9f0;
+    position: relative;
+}
+
+.sine-graph::after {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4cc9f0;
+    left: -4px;
+    top: 50%;
+    animation: sineGraph 5s linear infinite;
+}
+
+/* Differential Equations demo */
+.diff-demo svg {
+    width: 100%;
+    height: 90px;
+}
+
+.diff-curve {
+    fill: none;
+    stroke: #2ec4b6;
+    stroke-width: 2.5;
+    stroke-dasharray: 6;
+    animation: flowField 4s linear infinite;
+}
+
+.diff-curve.solution {
+    stroke: #ff9f1c;
+    stroke-width: 3;
+    stroke-dasharray: 260;
+    animation: solveTrace 5s ease-in-out infinite;
+}
+
+@keyframes flashRow {
+    0%, 60%, 100% { background: #e4efff; transform: scale(1); }
+    10% { background: #1b75d1; color: #fff; transform: scale(1.2); }
+}
+
+@keyframes flashCol {
+    0%, 60%, 100% { background: #ffe5f0; transform: scale(1); }
+    30% { background: #c2185b; color: #fff; transform: scale(1.2); }
+}
+
+@keyframes flashResult {
+    0%, 60%, 100% { background: #e7fbf0; transform: scale(1); }
+    50% { background: #1a7f4b; color: #fff; transform: scale(1.25); }
+}
+
+@keyframes drawCurve {
+    from { stroke-dashoffset: 230; }
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes growBar {
+    0% { height: 20px; }
+    50% { height: calc(var(--value) * 1%); }
+    100% { height: 28px; }
+}
+
+@keyframes rotateRadius {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes sineGraph {
+    0% { transform: translate(-50%, -0%); }
+    25% { transform: translate(-50%, -80%); }
+    50% { transform: translate(-50%, 0%); }
+    75% { transform: translate(-50%, 80%); }
+    100% { transform: translate(-50%, 0%); }
+}
+
+@keyframes flowField {
+    from { stroke-dashoffset: 0; }
+    to { stroke-dashoffset: 40; }
+}
+
+@keyframes solveTrace {
+    0% { stroke-dashoffset: 260; opacity: 0.4; }
+    60% { opacity: 1; }
+    100% { stroke-dashoffset: 0; opacity: 0.9; }
+}
+
+@media (max-width: 640px) {
+    .hero-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .trig-demo {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+}
+</style>
+
+<div class="math-home">
+    <div class="hero">
+        <h2>Interactive intuition first</h2>
+        <p>Each module pairs clean notes with live animations. Follow the motion to understand what the formulas are saying before you dive into the derivations.</p>
+        <div class="hero-actions">
+            <a class="topic-link primary" href="matrix_multiplication.html">Launch the Matrix Multiplication demo</a>
+            <a class="topic-link" href="index.md">View this page as Markdown</a>
+        </div>
+    </div>
+
+    <div class="topics-grid">
+        <div class="topic-card">
+            <h3>Linear Algebra</h3>
+            <p>Track how rows and columns interact visually, then jump into the full Matrix Multiplication lab for step-by-step narration.</p>
+            <div class="topic-demo matrix-demo">
+                <div class="matrix matrix-a">
+                    <span>2</span><span>1</span><span>0</span><span>3</span>
+                </div>
+                <div class="matrix matrix-b">
+                    <span>4</span><span>1</span><span>-2</span><span>5</span>
+                </div>
+                <div class="matrix matrix-c">
+                    <span>6</span><span>7</span><span>3</span><span>5</span>
+                </div>
+            </div>
+            <div class="topic-actions">
+                <a class="topic-link" href="linear_algebra.html">Read the notes</a>
+                <a class="topic-link" href="matrix_multiplication.html">Run the animation</a>
+            </div>
+        </div>
+
+        <div class="topic-card">
+            <h3>Calculus</h3>
+            <p>Watch a moving point trace a curve while the tangent slope evolves, mirroring the derivative visualizations inside the Calculus notebook.</p>
+            <div class="topic-demo calculus-demo">
+                <svg viewBox="0 0 120 60" preserveAspectRatio="none">
+                    <path class="calc-curve" d="M5 45 C 30 5, 70 5, 115 45" />
+                    <circle class="calc-point" r="3">
+                        <animateMotion dur="5s" repeatCount="indefinite" path="M5 45 C 30 5, 70 5, 115 45" />
+                    </circle>
+                </svg>
+            </div>
+            <div class="topic-actions">
+                <a class="topic-link" href="calculus.html">Derivative walkthrough</a>
+                <a class="topic-link" href="derivatives.html">Practice set</a>
+            </div>
+        </div>
+
+        <div class="topic-card">
+            <h3>Statistics</h3>
+            <p>Bar heights animate with each sample to mimic how our probability interactives update histograms in real time.</p>
+            <div class="topic-demo stats-demo">
+                <div class="bar" style="--value: 78; --index: 0" data-label="A"></div>
+                <div class="bar" style="--value: 62; --index: 1" data-label="B"></div>
+                <div class="bar" style="--value: 92; --index: 2" data-label="C"></div>
+                <div class="bar" style="--value: 54; --index: 3" data-label="D"></div>
+            </div>
+            <div class="topic-actions">
+                <a class="topic-link" href="statistics.html">Statistics overview</a>
+            </div>
+        </div>
+
+        <div class="topic-card">
+            <h3>Trigonometry</h3>
+            <p>Follow the rotating radius on the unit circle and the sine projection that scrolls in sync, the same motion used when we derive identities.</p>
+            <div class="topic-demo trig-demo">
+                <div class="unit-circle">
+                    <div class="trig-angle">
+                        <div class="radius"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="sine-graph"></div>
+            </div>
+            <div class="topic-actions">
+                <a class="topic-link" href="trigonometry.html">Trigonometry ideas</a>
+            </div>
+        </div>
+
+        <div class="topic-card">
+            <h3>Differential Equations</h3>
+            <p>Field lines flow underneath a highlighted solution curve, mirroring the slope-field animation used when solving first-order systems.</p>
+            <div class="topic-demo diff-demo">
+                <svg viewBox="0 0 180 80" preserveAspectRatio="none">
+                    <path class="diff-curve" d="M0 60 Q 20 45 40 60 T 80 60 T 120 60 T 160 60" />
+                    <path class="diff-curve" d="M0 40 Q 20 25 40 40 T 80 40 T 120 40 T 160 40" />
+                    <path class="diff-curve" d="M0 20 Q 20 5 40 20 T 80 20 T 120 20 T 160 20" />
+                    <path class="diff-curve solution" d="M0 50 C 40 10, 80 10, 160 50" />
+                </svg>
+            </div>
+            <div class="topic-actions">
+                <a class="topic-link" href="differential_equations.html">Read the solution notes</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
