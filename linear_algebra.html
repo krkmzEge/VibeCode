@@ -41,10 +41,14 @@
             line-height: 1.6;
             max-width: 620px;
         }
+        .hero-description {
+            margin-top: 30px;
+        }
         .hero-actions {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
+            margin-bottom: 18px;
         }
         .button {
             display: inline-flex;
@@ -97,6 +101,40 @@
         .concept-title {
             font-weight: 600;
             margin-bottom: 6px;
+        }
+        .qa {
+            margin-top: 18px;
+            border-radius: 20px;
+            border: 1px solid #dfe5ff;
+            background: #f7f8ff;
+            padding: 18px;
+        }
+        .qa h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+        }
+        .qa p {
+            margin: 0 0 10px;
+            color: var(--muted);
+        }
+        .qa-steps {
+            margin: 0;
+            padding-left: 20px;
+            color: var(--text);
+        }
+        .qa-steps li {
+            margin-bottom: 6px;
+            line-height: 1.5;
+        }
+        .animation-steps {
+            margin: 14px 0 0 0;
+            padding-left: 20px;
+            color: var(--text);
+        }
+        .animation-steps li {
+            margin-bottom: 8px;
+            line-height: 1.6;
         }
         .example {
             margin-top: 15px;
@@ -154,24 +192,46 @@
                 <a class="button primary" href="matrix_multiplication.html">Launch the matrix animation</a>
                 <a class="button secondary" href="math_visualization.html">Explore the visualization suite</a>
             </div>
+
+            <p class="hero-description">The goal is to treat a matrix as a machine: drop a vector in, and a new vector comes out. The animations show how rows remix coordinates and how columns drag the axes to new positions without needing heavy algebra.</p>
         </header>
 
         <section class="grid">
+            <article class="card">
+                <h2>How the matrix animation works</h2>
+                <p>The playground repeats the same story every time you choose a new matrix. Follow the steps below while you watch the grid morph.</p>
+                <ol class="animation-steps">
+                    <li><strong>Highlight a row.</strong> The animation pulses one row at a time so you can see how those numbers mix the input coordinates to produce a single output value.</li>
+                    <li><strong>Trace the columns.</strong> The bright handles on the grid are just the transformed versions of the standard axes. Dragging them helps you predict the final orientation.</li>
+                    <li><strong>Watch the green square.</strong> Its area tells you how much the transformation scales space, and whether the orientation flips. If the square collapses, the transformation squashes a dimension.</li>
+                    <li><strong>Compare with coordinates.</strong> As the point moves, the numeric readout updates so you can verify that the formulas match the visual motion.</li>
+                </ol>
+                <div class="qa" style="margin-top: 18px;">
+                    <h3>Behind the animation</h3>
+                    <p>The visuals are driven by three simple formulas that run every frame:</p>
+                    <ol class="qa-steps">
+                        <li><strong>Row mixing.</strong> Each highlighted row computes one output value using the dot product y<sub>i</sub> = a<sub>i1</sub>x<sub>1</sub> + a<sub>i2</sub>x<sub>2</sub> + &hellip; + a<sub>in</sub>x<sub>n</sub>. That is why the corresponding axis number changes as soon as the row glows.</li>
+                        <li><strong>Column remapping.</strong> The axis handles come from the column combination Ax = x<sub>1</sub>a<sub>1</sub> + x<sub>2</sub>a<sub>2</sub> + &hellip; + x<sub>n</sub>a<sub>n</sub>. Sliding a column instantly shows how the entire plane is built from those vectors.</li>
+                        <li><strong>Area tracker.</strong> The green square scales by the determinant, so in 2D it multiplies its area by (ad - bc) when A = [[a, b], [c, d]]. A zero determinant collapses the square, explaining why some transformations cannot be inverted.</li>
+                    </ol>
+                </div>
+            </article>
+
             <article class="card">
                 <h2>Key ideas at a glance</h2>
                 <p>The notes focus on interpreting matrices as transformations. Every derivation starts with a picture so the symbolic manipulations make geometric sense.</p>
                 <div class="concepts">
                     <div class="concept">
                         <div class="concept-title">Rows as dot-product filters</div>
-                        <div>Each row selects a weighted mix of input coordinates. Watching the highlighted rows in the animation makes the arithmetic feel like a story.</div>
+                        <div>Each row selects a weighted mix of the input coordinates. Watching the row glow inside the animation makes it obvious that one line of numbers controls exactly one number in the answer.</div>
                     </div>
                     <div class="concept">
                         <div class="concept-title">Columns as new basis vectors</div>
-                        <div>The columns show where the unit vectors land. Dragging them around in the interactive grid explains rank, determinants, and shears instantly.</div>
+                        <div>The columns show where the unit vectors land. When you drag the columns in the grid, you literally see how the axes bend, which explains rank, determinant, and shear ideas with a single motion.</div>
                     </div>
                     <div class="concept">
                         <div class="concept-title">Determinant as area scale</div>
-                        <div>Track the green parallelogram to see how orientation flips and area scaling emerge straight from the numbers.</div>
+                        <div>Track the green parallelogram to see how orientation flips and area scaling emerge straight from the numbers. Positive determinants keep the orientation, negative ones flip it, and the size tells you exactly how much the grid stretches.</div>
                     </div>
                 </div>
             </article>
@@ -203,15 +263,50 @@
                     </div>
                 </div>
             </article>
-
             <article class="card">
                 <h2>Example walkthrough</h2>
-                <p>A short sample from the notes showing how one row-column product corresponds to the new x-value of the grid.</p>
+                <p>Pick the matrix <strong>[[2, 1], [1, 3]]</strong> inside the playground. The first row mixes two copies of the x-value with one copy of the y-value, so a point like (4, -2) turns into 6 on the x-axis. The second row leans heavily on the y-value, which is why the new y-coordinate drops to -2 even though the original point had a positive 4.</p>
                 <div class="example">
-{(2, 1)} · {(4), (-2)} = (2 × 4) + (1 × -2) = 8 - 2 = 6<br>
-{(2, 1)} · {(1), (5)} = (2 × 1) + (1 × 5) = 2 + 5 = 7
+Input: (4, -2)<br>
+Output: (6, -2)<br>
+Observation: the grid stretches about five times larger, so areas grow by that factor.
                 </div>
-                <p>The animation highlights the active row and column so the numerical pattern above literally glows on the grid.</p>
+                <p>This tiny story shows how to read every animation: rows describe how much you blend coordinates, columns reveal where the axes land, and the green square reports how much the transformation scales shapes.</p>
+            </article>
+
+            <article class="card">
+                <h2>Guided questions</h2>
+                <p>Use these step-by-step prompts while exploring the animations. Each one walks through the reasoning so newcomers can follow along without extra background.</p>
+
+                <div class="qa">
+                    <h3>1. What does the matrix [[0, 1], [-1, 0]] do to any point?</h3>
+                    <p>This is the classic rotation puzzle. Follow the steps to see why it always spins the plane 90° counterclockwise.</p>
+                    <ol class="qa-steps">
+                        <li>Check what happens to the x-axis: plug in (1, 0) and the output becomes (0, -1), which lives on the negative y-axis.</li>
+                        <li>Check the y-axis: plug in (0, 1) and the output becomes (1, 0), which lands on the positive x-axis.</li>
+                        <li>Because the matrix only repositions the axes, every other point follows the same quarter-turn sweep in the animation.</li>
+                    </ol>
+                </div>
+
+                <div class="qa">
+                    <h3>2. How can I tell if a matrix is invertible just by looking at the grid?</h3>
+                    <p>Invertible means you can reverse the transformation. The visual test is quick:</p>
+                    <ol class="qa-steps">
+                        <li>Watch the grid while you drag points. If the green parallelogram collapses into a line, information is lost and the matrix is not invertible.</li>
+                        <li>If the shape stays 2D and never folds the entire square onto a line, there is always a way back.</li>
+                        <li>The animation labels also show the determinant. Any determinant other than zero matches the “still a full shape” observation.</li>
+                    </ol>
+                </div>
+
+                <div class="qa">
+                    <h3>3. Why do columns reveal the rank of a matrix?</h3>
+                    <p>Rank counts how many directions survive the transformation. Follow the columns to see it play out.</p>
+                    <ol class="qa-steps">
+                        <li>Drag the column handles. If one column lies on top of the other, both axes land on the same line, meaning only one direction remains &mdash; rank 1.</li>
+                        <li>If the columns stay separated, you still have two independent directions, so the matrix has rank 2.</li>
+                        <li>This geometric picture matches the algebraic definition but feels tangible because you can see the axes collapsing or staying apart.</li>
+                    </ol>
+                </div>
             </article>
         </section>
     </main>
