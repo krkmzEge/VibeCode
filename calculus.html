@@ -1,1 +1,216 @@
-# Calculus
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculus Walkthrough</title>
+    <style>
+        :root {
+            --bg: #f6fbff;
+            --text: #14233b;
+            --muted: #58627a;
+            --primary: #0077ff;
+            --accent: #ff7cbf;
+            --card: #ffffff;
+        }
+        body {
+            font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            background: linear-gradient(180deg, #e9f1ff 0%, #fdfdff 100%);
+            color: var(--text);
+            padding: 40px 0 60px;
+        }
+        main {
+            width: min(960px, 92vw);
+            margin: 0 auto;
+        }
+        .hero {
+            background: radial-gradient(circle at 20% 20%, rgba(0,119,255,0.2), transparent),
+                        radial-gradient(circle at 80% 0%, rgba(255,124,191,0.25), transparent),
+                        #0f172a;
+            color: white;
+            border-radius: 30px;
+            padding: 48px;
+            box-shadow: 0 30px 80px rgba(17, 24, 39, 0.4);
+        }
+        .hero h1 { margin: 0 0 12px; font-size: clamp(2rem, 4vw, 2.8rem); }
+        .hero p { margin: 0 0 20px; line-height: 1.7; max-width: 620px; }
+        .hero p small { color: rgba(255,255,255,0.7); letter-spacing: .2em; display: block; margin-bottom: 12px; text-transform: uppercase; }
+        .hero-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .button {
+            padding: 12px 20px;
+            border-radius: 999px;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+        }
+        .button.secondary {
+            background: white;
+            color: var(--primary);
+            border: none;
+        }
+        section {
+            margin-top: 32px;
+            background: var(--card);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 25px 45px rgba(15, 23, 42, 0.08);
+        }
+        section + section { margin-top: 24px; }
+        h2 { margin-top: 0; }
+        p { line-height: 1.6; color: var(--muted); }
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-top: 20px;
+        }
+        .concept {
+            border-radius: 20px;
+            border: 1px solid #e2e8ff;
+            padding: 18px;
+            background: #f9fbff;
+        }
+        .concept strong { color: var(--text); }
+        .curve-diagram {
+            margin-top: 15px;
+            height: 200px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(0,119,255,.05), rgba(255,124,191,.08));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .curve-diagram::before {
+            content: '';
+            width: 160px;
+            height: 90px;
+            border: 2px solid rgba(0,119,255,.5);
+            border-radius: 80px/40px;
+            transform: rotate(-5deg);
+        }
+        .curve-diagram::after {
+            content: '';
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--accent);
+            position: absolute;
+            animation: movePoint 4s ease-in-out infinite;
+        }
+        .timeline-step {
+            display: grid;
+            grid-template-columns: 60px 1fr;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid #ecefff;
+        }
+        .timeline-step:last-child { border-bottom: none; }
+        .timeline-index {
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            background: rgba(0,119,255,.1);
+            color: var(--primary);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        blockquote {
+            margin: 0;
+            padding: 20px;
+            border-left: 4px solid var(--primary);
+            background: #f5f8ff;
+            border-radius: 18px;
+            color: var(--text);
+            font-style: italic;
+        }
+        @keyframes movePoint {
+            0% { transform: translate(-60px, 10px); }
+            50% { transform: translate(60px, -20px); }
+            100% { transform: translate(-60px, 10px); }
+        }
+        @media (max-width: 640px) {
+            body { padding-top: 24px; }
+            .hero { padding: 28px; border-radius: 22px; }
+            section { padding: 22px; }
+            .hero-actions { flex-direction: column; }
+            .timeline-step { grid-template-columns: 1fr; }
+            .timeline-index { width: 48px; height: 48px; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <header class="hero">
+            <p><small>Derivatives</small>Follow the slope as the curve moves.</p>
+            <h1>Understand rates of change visually</h1>
+            <p>These notes were written to match the animated tangent tracker on the homepage. Every definition, limit, and derivative rule points back to a picture so you can read the algebra straight from the motion.</p>
+            <div class="hero-actions">
+                <a class="button" href="math_visualization.html">Open interactive suite</a>
+                <a class="button secondary" href="derivatives.html">Jump to practice set</a>
+            </div>
+        </header>
+
+        <section>
+            <h2>What you will learn</h2>
+            <p>A derivative answers “How quickly is this thing changing right now?” Rather than memorizing rules, we start with slopes of secant lines and shrink them into tangents.</p>
+            <div class="concept-grid">
+                <div class="concept">
+                    <strong>Limit definition</strong>
+                    <p>The derivative of \(f(x)\) at \(x=a\) is the limit of the slope between \(a\) and \(a+h\) as \(h\) approaches 0.</p>
+                </div>
+                <div class="concept">
+                    <strong>Motion interpretation</strong>
+                    <p>Think of the moving pink point. Its vertical speed is exactly the derivative you compute.</p>
+                </div>
+                <div class="concept">
+                    <strong>Derivative rules</strong>
+                    <p>Power, sum, and chain rules appear as shortcuts after you understand the limiting picture.</p>
+                </div>
+            </div>
+            <div class="curve-diagram"></div>
+        </section>
+
+        <section>
+            <h2>Step-by-step walkthrough</h2>
+            <div class="timeline-step">
+                <div class="timeline-index">01</div>
+                <div>
+                    <h3>Start with a sketch and prediction</h3>
+                    <p>Look at the graph of \(f(x)=\sin x \cdot x\). Before calculating, guess if the slope is positive or negative at the point we care about.</p>
+                </div>
+            </div>
+            <div class="timeline-step">
+                <div class="timeline-index">02</div>
+                <div>
+                    <h3>Set up the difference quotient</h3>
+                    <p>\(\frac{f(a+h)-f(a)}{h}\) is the slope between two nearby points. Plug the function values in but keep it symbolic as long as possible.</p>
+                </div>
+            </div>
+            <div class="timeline-step">
+                <div class="timeline-index">03</div>
+                <div>
+                    <h3>Take the limit and interpret</h3>
+                    <p>After simplifying, send \(h \to 0\). The result is the instantaneous slope. Compare it to the tangent line illustrated in the animation.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Why this matters</h2>
+            <blockquote>
+                “The derivative is not just a number—it’s the simplest linear story that mimics your function near a point.”
+            </blockquote>
+            <p>Each section of the notes closes with an “animation cue” that tells you what to look for in the Calculus card back on the homepage so formulas and visuals stay synchronized.</p>
+        </section>
+    </main>
+</body>
+</html>

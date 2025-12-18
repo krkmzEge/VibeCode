@@ -1,1 +1,219 @@
-# Linear Algebra
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Algebra Notes</title>
+    <style>
+        :root {
+            --bg: #f3f6ff;
+            --text: #182043;
+            --muted: #5d6785;
+            --primary: #5a6ef6;
+            --accent: #3ecf8e;
+            --card: #fff;
+            --border: #e6ebff;
+        }
+        body {
+            font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, #eef2ff 0%, #fdfdff 100%);
+            margin: 0;
+            padding: 40px 0 60px;
+            color: var(--text);
+        }
+        .page {
+            width: min(960px, 92vw);
+            margin: 0 auto;
+        }
+        .hero {
+            background: linear-gradient(125deg, #5169ff, #8b5cf6);
+            color: #fff;
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 35px 80px rgba(76, 97, 255, 0.2);
+        }
+        .hero h1 {
+            margin: 0 0 12px;
+            font-size: clamp(2rem, 4vw, 2.8rem);
+        }
+        .hero p {
+            margin: 0 0 24px;
+            line-height: 1.6;
+            max-width: 620px;
+        }
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 22px;
+            border-radius: 999px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: none;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .button.primary {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .button.secondary {
+            background: #fff;
+            color: #5a6ef6;
+        }
+        .button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.08);}
+        .grid {
+            margin-top: 40px;
+            display: grid;
+            gap: 22px;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 25px 40px rgba(23, 32, 90, 0.08);
+        }
+        .card h2 { margin: 0 0 10px; }
+        .card p { color: var(--muted); line-height: 1.6; margin: 0; }
+        .concepts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-top: 18px;
+        }
+        .concept {
+            padding: 18px;
+            border-radius: 18px;
+            background: #f8f9ff;
+            border: 1px dashed #dbe1ff;
+        }
+        .concept-title {
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .example {
+            margin-top: 15px;
+            padding: 18px;
+            border-radius: 18px;
+            background: #1f2937;
+            color: #f9fafb;
+            font-family: "Fira Code", "SFMono-Regular", Consolas, monospace;
+            font-size: 0.95rem;
+        }
+        .timeline {
+            margin-top: 18px;
+        }
+        .timeline-step {
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid #edf1ff;
+        }
+        .timeline-step:last-child { border-bottom: none; }
+        .step-index {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: rgba(90, 110, 246, 0.12);
+            color: #5a6ef6;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .step-body h3 {
+            margin: 0 0 6px;
+            font-size: 1.05rem;
+        }
+        .step-body p {
+            margin: 0;
+            color: var(--muted);
+        }
+        @media (max-width: 640px) {
+            body { padding: 20px 0 40px; }
+            .hero { padding: 28px; border-radius: 22px; }
+            .card { padding: 22px; }
+            .hero-actions { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <header class="hero">
+            <p style="text-transform: uppercase; letter-spacing: .2em; font-size: .8rem; opacity: .85;">Linear Algebra</p>
+            <h1>Build intuition before the algebra</h1>
+            <p>Linear algebra tells us how vectors, planes, and higher-dimensional data respond to matrix operations. These notes pair clean explanations with the interactive <strong>Matrix Multiplication</strong> playground so you can see each concept morph the grid in real time.</p>
+            <div class="hero-actions">
+                <a class="button primary" href="matrix_multiplication.html">Launch the matrix animation</a>
+                <a class="button secondary" href="math_visualization.html">Explore the visualization suite</a>
+            </div>
+        </header>
+
+        <section class="grid">
+            <article class="card">
+                <h2>Key ideas at a glance</h2>
+                <p>The notes focus on interpreting matrices as transformations. Every derivation starts with a picture so the symbolic manipulations make geometric sense.</p>
+                <div class="concepts">
+                    <div class="concept">
+                        <div class="concept-title">Rows as dot-product filters</div>
+                        <div>Each row selects a weighted mix of input coordinates. Watching the highlighted rows in the animation makes the arithmetic feel like a story.</div>
+                    </div>
+                    <div class="concept">
+                        <div class="concept-title">Columns as new basis vectors</div>
+                        <div>The columns show where the unit vectors land. Dragging them around in the interactive grid explains rank, determinants, and shears instantly.</div>
+                    </div>
+                    <div class="concept">
+                        <div class="concept-title">Determinant as area scale</div>
+                        <div>Track the green parallelogram to see how orientation flips and area scaling emerge straight from the numbers.</div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card">
+                <h2>From computation to intuition</h2>
+                <p>Follow this mini-flow whenever you study a new matrix problem. It keeps the algebra grounded in visuals:</p>
+                <div class="timeline">
+                    <div class="timeline-step">
+                        <div class="step-index">01</div>
+                        <div class="step-body">
+                            <h3>Sketch &amp; predict</h3>
+                            <p>Plot the column vectors or guess how the unit square will deform.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="step-index">02</div>
+                        <div class="step-body">
+                            <h3>Compute deliberately</h3>
+                            <p>Multiply rows by columns, keeping an eye on what each term means for the picture.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="step-index">03</div>
+                        <div class="step-body">
+                            <h3>Compare outcome vs. prediction</h3>
+                            <p>Use the interactive demo to verify angles, area changes, and vector directions.</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card">
+                <h2>Example walkthrough</h2>
+                <p>A short sample from the notes showing how one row-column product corresponds to the new x-value of the grid.</p>
+                <div class="example">
+{(2, 1)} · {(4), (-2)} = (2 × 4) + (1 × -2) = 8 - 2 = 6<br>
+{(2, 1)} · {(1), (5)} = (2 × 1) + (1 × 5) = 2 + 5 = 7
+                </div>
+                <p>The animation highlights the active row and column so the numerical pattern above literally glows on the grid.</p>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

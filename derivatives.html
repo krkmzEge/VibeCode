@@ -1,142 +1,214 @@
-# Derivatives
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derivative Practice Lab</title>
+    <style>
+        :root {
+            --bg: #fcf9ff;
+            --text: #1a1a33;
+            --muted: #5c5d73;
+            --primary: #d946ef;
+            --accent: #0ea5e9;
+            --card: #ffffff;
+            --border: #f0e9ff;
+        }
+        body {
+            font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            margin: 0;
+            padding: 40px 0 60px;
+            color: var(--text);
+        }
+        main {
+            width: min(960px, 92vw);
+            margin: 0 auto;
+        }
+        .hero {
+            background: linear-gradient(120deg, #ec4899, #8b5cf6);
+            color: #fff;
+            border-radius: 30px;
+            padding: 48px;
+            box-shadow: 0 30px 70px rgba(139, 92, 246, 0.35);
+        }
+        .hero p { margin: 0 0 20px; line-height: 1.6; }
+        .hero h1 { margin: 0 0 14px; font-size: clamp(2rem, 4vw, 2.7rem); }
+        .hero small { letter-spacing: .2em; text-transform: uppercase; opacity: .75; display: block; margin-bottom: 12px; }
+        .hero-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 12px 22px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.4);
+            color: #fff;
+        }
+        .btn.secondary {
+            background: #fff;
+            color: #d946ef;
+            border: none;
+        }
+        .card {
+            background: var(--card);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.07);
+            margin-top: 26px;
+            border: 1px solid var(--border);
+        }
+        h2 { margin-top: 0; }
+        p { color: var(--muted); line-height: 1.6; }
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 18px;
+            margin-top: 16px;
+        }
+        .rule {
+            background: #fdf2ff;
+            border-radius: 20px;
+            padding: 18px;
+            border: 1px dashed #f5d8ff;
+        }
+        .rule strong { color: var(--text); display: block; margin-bottom: 8px; }
+        .practice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+            margin-top: 18px;
+        }
+        .practice-card {
+            border-radius: 18px;
+            background: #f5faff;
+            padding: 20px;
+            border: 1px solid #d7ecff;
+        }
+        .practice-card h3 { margin: 0 0 8px; }
+        .tag {
+            display: inline-flex;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(14,165,233,.12);
+            color: var(--accent);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .steps {
+            margin-top: 15px;
+            padding: 18px;
+            border-radius: 16px;
+            background: #0f172a;
+            color: #f8fafc;
+            font-family: "Fira Code", Consolas, monospace;
+            font-size: 0.95rem;
+        }
+        .callout {
+            border-radius: 20px;
+            padding: 20px;
+            background: rgba(217,70,239,.08);
+            border: 1px solid rgba(217,70,239,.3);
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .callout-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: rgba(217,70,239,.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: #d946ef;
+        }
+        @media (max-width: 640px) {
+            body { padding-top: 24px; }
+            .hero { padding: 28px; border-radius: 22px; }
+            .card { padding: 22px; }
+            .hero-actions { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <header class="hero">
+            <small>Practice Lab</small>
+            <h1>Test derivative intuition without leaving the page</h1>
+            <p>Warm up with the core rules, then tackle mixed problems that mirror what you just saw in the Calculus walkthrough. Each prompt includes gentle hints so you can self-check without spoiling the thinking.</p>
+            <div class="hero-actions">
+                <a class="btn" href="calculus.html">Review the walkthrough</a>
+                <a class="btn secondary" href="math_visualization.html">Open interactive suite</a>
+            </div>
+        </header>
 
-In calculus, the derivative is a measure of how a function changes as its input changes.
+        <section class="card">
+            <h2>Recall sheet</h2>
+            <p>A quick refresher with the language used in the main notes.</p>
+            <div class="rules-grid">
+                <div class="rule">
+                    <strong>Power Rule</strong>
+                    <p>If <em>f(x) = xⁿ</em>, then <em>f′(x) = n·xⁿ⁻¹</em>. Use it any time exponents are plain numbers.</p>
+                </div>
+                <div class="rule">
+                    <strong>Product Rule</strong>
+                    <p><em>(uv)' = u'v + uv'</em>. Think “front derivative times back, plus back derivative times front.”</p>
+                </div>
+                <div class="rule">
+                    <strong>Chain Rule</strong>
+                    <p>Differentiate the outside, keep the inside, then multiply by the inside’s derivative. Perfect for compositions.</p>
+                </div>
+                <div class="rule">
+                    <strong>Quotient Rule</strong>
+                    <p><em>(u/v)' = (u'v - uv') / v²</em>. Or rewrite as product with v⁻¹ if that’s easier.</p>
+                </div>
+            </div>
+        </section>
 
-## Power Rule
+        <section class="card">
+            <h2>Practice set</h2>
+            <p>Work them in order or jump to what you need. Cover the hints until you check yourself.</p>
+            <div class="practice-grid">
+                <article class="practice-card">
+                    <span class="tag">Warm-up</span>
+                    <h3>Differentiate f(x) = 3x⁴ - 2x² + 1</h3>
+                    <p>Answer: f′(x) = 12x³ - 4x.</p>
+                </article>
+                <article class="practice-card">
+                    <span class="tag">Product + Chain</span>
+                    <h3>f(x) = e^{x²} · sin(3x)</h3>
+                    <p>Answer: f′(x) = 2x e^{x²} sin(3x) + 3 e^{x²} cos(3x).</p>
+                </article>
+                <article class="practice-card">
+                    <span class="tag">Quotient</span>
+                    <h3>f(x) = (x² + 1)/(x - 1)</h3>
+                    <p>Answer: f′(x) = [(2x)(x-1) - (x²+1)] / (x-1)².</p>
+                </article>
+                <article class="practice-card">
+                    <span class="tag">Chain</span>
+                    <h3>f(x) = (4x³ - x)⁵</h3>
+                    <p>Answer: f′(x) = 5(4x³ - x)⁴ · (12x² - 1).</p>
+                </article>
+            </div>
+            <div class="steps">
+                Step cue: draw a quick tangent estimate → write the symbolic derivative → compare slopes with the Calculus animation’s tangent line to confirm sign and magnitude.
+            </div>
+        </section>
 
-The power rule is used to differentiate functions of the form $f(x) = x^n$.
-
-$$
-\frac{d}{dx}x^n = nx^{n-1}
-$$
-
-**Example:**
-
-For $f(x) = x^3$, the derivative is $f'(x) = 3x^2$.
-
-## Product Rule
-
-The product rule is used to differentiate the product of two functions.
-
-$$
-\frac{d}{dx}(u \cdot v) = u \frac{dv}{dx} + v \frac{du}{dx}
-$$
-
-**Example:**
-
-For $f(x) = x^2 \sin(x)$, let $u = x^2$ and $v = \sin(x)$.
-Then $f'(x) = x^2 \cos(x) + 2x \sin(x)$.
-
-## Quotient Rule
-
-The quotient rule is used to differentiate the quotient of two functions.
-
-$$ 
-\frac{d}{dx}\left(\frac{u}{v}\right) = \frac{v \frac{du}{dx} - u \frac{dv}{dx}}{v^2}
-$$ 
-
-**Example:**
-
-For $f(x) = \frac{\sin(x)}{x}$, let $u = \sin(x)$ and $v = x$.
-Then $f'(x) = \frac{x \cos(x) - \sin(x)}{x^2}$.
-
-## Chain Rule
-
-The chain rule is used to differentiate composite functions.
-
-$$ 
-\frac{dy}{dx} = \frac{dy}{du} \cdot \frac{du}{dx}
-$$ 
-
-**Example:**
-
-For $f(x) = (x^2 + 1)^3$, let $u = x^2 + 1$ and $y = u^3$.
-Then $\frac{dy}{du} = 3u^2$ and $\frac{du}{dx} = 2x$.
-So, $f'(x) = 3(x^2+1)^2 \cdot 2x = 6x(x^2+1)^2$.
-
----
-
-## Advanced Examples
-
-Here are some more complex examples that combine the rules above.
-
-### 1. Combining Product and Chain Rules
-
-Let's find the derivative of $f(x) = e^{x^2} \sin(3x)$.
-
-This requires the **Product Rule** ($u = e^{x^2}$, $v = \sin(3x)$) and the **Chain Rule** for each part.
-
--   For $u = e^{x^2}$, the derivative is $u' = e^{x^2} \cdot 2x$.
--   For $v = \sin(3x)$, the derivative is $v' = \cos(3x) \cdot 3$.
-
-Applying the product rule $f'(x) = uv' + vu'$:
-
-$$
-f'(x) = (e^{x^2})(3\cos(3x)) + (\sin(3x))(2xe^{x^2})
-$$
-
-Factoring out $e^{x^2}$:
-
-$$
-f'(x) = e^{x^2} (3\cos(3x) + 2x\sin(3x))
-$$
-
-### 2. Implicit Differentiation
-
-Consider the equation of a circle: $x^2 + y^2 = 25$. We can find the slope of the tangent line, $\frac{dy}{dx}$, without solving for $y$.
-
-Differentiate both sides with respect to $x$:
-
-$$
-\frac{d}{dx}(x^2) + \frac{d}{dx}(y^2) = \frac{d}{dx}(25)
-$$
-
-Using the chain rule for $\frac{d}{dx}(y^2)$:
-
-$$
-2x + 2y \frac{dy}{dx} = 0
-$$
-
-Now, solve for $\frac{dy}{dx}$:
-
-$$
-2y \frac{dy}{dx} = -2x
-$$
-
-$$
-\frac{dy}{dx} = -\frac{x}{y}
-$$
-
-### 3. Logarithmic Differentiation
-
-Let's find the derivative of $f(x) = x^x$.
-
-This is tricky because the variable appears in both the base and the exponent. We can use logarithms to simplify it.
-
-Let $y = x^x$. Take the natural logarithm of both sides:
-
-$$
-\ln(y) = \ln(x^x)
-$$
-
-Using logarithm properties, we get:
-
-$$
-\ln(y) = x \ln(x)
-$$
-
-Now, use implicit differentiation (differentiate both sides with respect to $x$):
-
-$$
-\frac{1}{y}\frac{dy}{dx} = (1)(\ln(x)) + (x)\left(\frac{1}{x}\right)
-$$
-
-$$
-\frac{1}{y}\frac{dy}{dx} = \ln(x) + 1
-$$
-
-Solve for $\frac{dy}{dx}$ and substitute $y = x^x$ back in:
-
-$$
-\frac{dy}{dx} = y (\ln(x) + 1) = x^x (\ln(x) + 1)
-$$
+        <section class="card">
+            <h2>Keep the feedback loop tight</h2>
+            <div class="callout">
+                <div class="callout-icon">★</div>
+                <div>
+                    <p>Each practice problem lines up with a visual moment in the Calculus card on the homepage. After differentiating, hop back and scrub along the curve—the motion should now feel obvious.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

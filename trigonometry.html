@@ -1,1 +1,253 @@
-# Trigonometry
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trigonometry Ideas</title>
+    <style>
+        :root {
+            --bg: #fef9f1;
+            --text: #1b1f3b;
+            --muted: #605a6e;
+            --primary: #f4b400;
+            --accent: #00b4d8;
+            --card: #fff;
+            --border: #f2e2c0;
+        }
+        body {
+            margin: 0;
+            font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(circle at 10% 20%, rgba(244,180,0,0.15), transparent 30%),
+                        radial-gradient(circle at 90% 10%, rgba(0,180,216,0.15), transparent 30%),
+                        #fff8ef;
+            padding: 42px 0 60px;
+            color: var(--text);
+        }
+        main {
+            width: min(980px, 92vw);
+            margin: 0 auto;
+        }
+        .hero {
+            background: linear-gradient(120deg, #f8c622, #ff8f5a);
+            color: #fff;
+            padding: 48px;
+            border-radius: 32px;
+            box-shadow: 0 30px 70px rgba(255, 143, 90, 0.4);
+            position: relative;
+        }
+        .hero::after {
+            content: "";
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 2px dashed rgba(255,255,255,0.5);
+            right: 40px;
+            top: 25px;
+        }
+        .hero h1 { margin: 0 0 12px; font-size: clamp(2rem, 4vw, 2.7rem); }
+        .hero p { line-height: 1.6; max-width: 600px; margin: 0 0 18px; }
+        .hero-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .button {
+            border-radius: 999px;
+            padding: 12px 24px;
+            font-weight: 600;
+            text-decoration: none;
+            color: #f46a26;
+            background: #fff;
+        }
+        section {
+            margin-top: 30px;
+            padding: 30px;
+            background: var(--card);
+            border-radius: 26px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 45px rgba(27, 31, 59, 0.08);
+        }
+        h2 { margin-top: 0; }
+        p { color: var(--muted); line-height: 1.6; }
+        .unit-circle {
+            margin-top: 18px;
+            display: flex;
+            gap: 28px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .circle-visual {
+            flex: 1;
+            min-width: 260px;
+            height: 260px;
+            border-radius: 30px;
+            background: linear-gradient(145deg, #fff5d7, #ffe1c1);
+            position: relative;
+            overflow: hidden;
+        }
+        .circle-visual::before {
+            content: "";
+            width: 180px;
+            height: 180px;
+            border: 2px dashed #f1b92c;
+            border-radius: 50%;
+            position: absolute;
+            top: 40px;
+            left: calc(50% - 90px);
+        }
+        .radius {
+            position: absolute;
+            width: 2px;
+            height: 90px;
+            background: #f46a26;
+            top: 130px;
+            left: 50%;
+            transform-origin: bottom center;
+            animation: rotateArm 6s linear infinite;
+        }
+        .sine-projection {
+            position: absolute;
+            width: 180px;
+            height: 90px;
+            right: 20px;
+            bottom: 20px;
+            border-left: 2px solid #00b4d8;
+            border-bottom: 2px solid #00b4d8;
+        }
+        .sine-projection::after {
+            content: "";
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00b4d8;
+            position: absolute;
+            left: -5px;
+            animation: slideSine 6s linear infinite;
+        }
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-top: 20px;
+        }
+        .concept {
+            border-radius: 18px;
+            padding: 18px;
+            border: 1px solid #ffe1c1;
+            background: #fffdf7;
+        }
+        .flow-step {
+            display: grid;
+            grid-template-columns: 60px 1fr;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid #f5e6cf;
+        }
+        .flow-step:last-child { border-bottom: none; }
+        .flow-index {
+            width: 60px;
+            height: 60px;
+            border-radius: 20px;
+            background: rgba(244, 106, 38, 0.15);
+            color: #f46a26;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .callout {
+            margin-top: 16px;
+            padding: 18px;
+            border-radius: 20px;
+            border: 1px solid rgba(0,180,216,0.2);
+            background: rgba(0,180,216,0.08);
+        }
+        @keyframes rotateArm {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes slideSine {
+            0% { transform: translate(0, -0px); }
+            25% { transform: translate(0, -60px); }
+            50% { transform: translate(0, 0px); }
+            75% { transform: translate(0, 60px); }
+            100% { transform: translate(0, -0px); }
+        }
+        @media (max-width: 640px) {
+            body { padding-top: 24px; }
+            .hero { padding: 30px; border-radius: 24px; }
+            section { padding: 22px; }
+            .hero-actions { flex-direction: column; }
+            .flow-step { grid-template-columns: 1fr; }
+            .flow-index { width: 48px; height: 48px; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <header class="hero">
+            <h1>Trigonometry ideas</h1>
+            <p>The rotating radius on the home page traces cosine horizontally and sine vertically. This guide explains the story behind that animation so you can connect the moving dot to identities and real problems.</p>
+            <div class="hero-actions">
+                <a class="button" href="math_visualization.html">Play with the live animation</a>
+            </div>
+        </header>
+
+        <section>
+            <h2>The unit circle as a storyteller</h2>
+            <p>The best way to remember trig is to see the unit circle as a simple animation that produces two outputs at once.</p>
+            <div class="unit-circle">
+                <div class="circle-visual">
+                    <div class="radius"></div>
+                    <div class="sine-projection"></div>
+                </div>
+                <div style="flex:1; min-width:260px;">
+                    <div class="concept-grid">
+                        <div class="concept">
+                            <strong>Cosine = x-position</strong>
+                            <p>The horizontal coordinate of the endpoint tells you cos θ immediately. Watch how it slides left and right.</p>
+                        </div>
+                        <div class="concept">
+                            <strong>Sine = y-position</strong>
+                            <p>The vertical coordinate is sin θ. The projection on the right mirrors the sine graph scrolling in time.</p>
+                        </div>
+                        <div class="concept">
+                            <strong>Phase = angle</strong>
+                            <p>Every 360° loop brings the point back to the start, encoding periodicity.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Linking animation to identities</h2>
+            <div class="flow-step">
+                <div class="flow-index">01</div>
+                <div>
+                    <h3>Trace projections</h3>
+                    <p>Follow the moving dot along the sine projection. The horizontal component is cos θ, vertical is sin θ.</p>
+                </div>
+            </div>
+            <div class="flow-step">
+                <div class="flow-index">02</div>
+                <div>
+                    <h3>Form the Pythagorean identity</h3>
+                    <p>Since the radius length is 1, \( \sin^2 \theta + \cos^2 \theta = 1 \) simply states that the point lies on the circle.</p>
+                </div>
+            </div>
+            <div class="flow-step">
+                <div class="flow-index">03</div>
+                <div>
+                    <h3>Understand phase shifts</h3>
+                    <p>Dragging the angle forward by 90° swaps sine and cosine positions, explaining addition formulas visually.</p>
+                </div>
+            </div>
+            <div class="callout">
+                Animation tip: pause the animation when the dot crosses quadrants, then write the signs of sin θ and cos θ. You just derived the ASTC mnemonic straight from motion.
+            </div>
+        </section>
+    </main>
+</body>
+</html>

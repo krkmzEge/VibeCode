@@ -1,1 +1,218 @@
-# Statistics
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics Overview</title>
+    <style>
+        :root {
+            --bg: #f5f7ff;
+            --text: #16213f;
+            --muted: #5c6383;
+            --primary: #7b2ff7;
+            --accent: #ff6ad5;
+            --card: #fff;
+            --border: #e4e5f7;
+        }
+        body {
+            margin: 0;
+            font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(circle at top left, #eef1ff 0%, #fdfdff 45%, #fafbff 100%);
+            color: var(--text);
+            padding: 40px 0 60px;
+        }
+        main {
+            width: min(980px, 92vw);
+            margin: 0 auto;
+        }
+        .hero {
+            background: linear-gradient(120deg, #7b2ff7, #ff6ad5);
+            color: #fff;
+            border-radius: 34px;
+            padding: 48px;
+            box-shadow: 0 35px 80px rgba(123, 47, 247, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::after {
+            content: "";
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            right: -60px;
+            top: -40px;
+        }
+        .hero small {
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            opacity: 0.8;
+        }
+        .hero h1 { margin: 10px 0; font-size: clamp(2rem, 4vw, 2.8rem); }
+        .hero p { line-height: 1.7; max-width: 600px; margin: 0 0 22px; }
+        .hero-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .button {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 22px;
+            border-radius: 999px;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid rgba(255,255,255,0.4);
+            color: #fff;
+        }
+        .button.secondary {
+            background: #fff;
+            color: var(--primary);
+            border: none;
+        }
+        section {
+            margin-top: 28px;
+            background: var(--card);
+            border-radius: 26px;
+            padding: 32px;
+            box-shadow: 0 25px 45px rgba(20, 23, 60, 0.08);
+            border: 1px solid var(--border);
+        }
+        h2 { margin-top: 0; }
+        p { color: var(--muted); line-height: 1.6; }
+        .insights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-top: 20px;
+        }
+        .insight {
+            border-radius: 20px;
+            padding: 18px;
+            background: #f4f1ff;
+            border: 1px solid #e6dbff;
+        }
+        .insight strong { color: var(--text); display: block; margin-bottom: 6px; }
+        .mini-chart {
+            margin-top: 16px;
+            background: #161b2d;
+            border-radius: 18px;
+            height: 220px;
+            padding: 20px;
+            color: #fff;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            gap: 16px;
+        }
+        .bar {
+            width: 40px;
+            border-radius: 12px 12px 4px 4px;
+            background: linear-gradient(180deg, var(--accent), #7b2ff7);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            position: relative;
+            animation: rise 4s ease-in-out infinite;
+        }
+        .bar span {
+            position: absolute;
+            bottom: -32px;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.8);
+        }
+        .curves {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+            margin-top: 18px;
+        }
+        .curve-card {
+            background: #f6faff;
+            padding: 18px;
+            border-radius: 18px;
+            border: 1px solid #dfe9ff;
+        }
+        .steps {
+            margin-top: 14px;
+            border-radius: 18px;
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 18px;
+            font-family: "Fira Code", Consolas, monospace;
+            font-size: 0.95rem;
+        }
+        @keyframes rise {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+        }
+        @media (max-width: 640px) {
+            body { padding-top: 24px; }
+            .hero { padding: 30px; border-radius: 24px; }
+            section { padding: 24px; }
+            .hero-actions { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <header class="hero">
+            <small>Statistics</small>
+            <h1>See randomness settle into pattern</h1>
+            <p>The animation on the home page samples artificial data live. These notes explain why the bars steady out, what variance and expectation mean, and how to reason about distributions beyond eyeballing the graph.</p>
+            <div class="hero-actions">
+                <a class="button" href="math_visualization.html">Interactive visualizations</a>
+                <a class="button secondary" href="matrix_multiplication.html">Visit another demo</a>
+            </div>
+        </header>
+
+        <section>
+            <h2>What the histogram is really telling you</h2>
+            <p>The galton-board inspired stats card shows a histogram updating with each dropped sample. Use this translation table to read it like a pro:</p>
+            <div class="insights">
+                <div class="insight">
+                    <strong>Bar height → frequency</strong>
+                    <p>Taller means the outcome has occurred more often. Over time bars arrange themselves into the underlying probability curve.</p>
+                </div>
+                <div class="insight">
+                    <strong>Width → bucket size</strong>
+                    <p>Narrow bins capture detail but look noisy; wide bins smooth things out but may hide features.</p>
+                </div>
+                <div class="insight">
+                    <strong>Color → sample age</strong>
+                    <p>In the interactive chart, lighter shades indicate recent samples so trends are easy to track.</p>
+                </div>
+            </div>
+            <div class="mini-chart">
+                <div class="bar" style="height: 50%; animation-delay: 0s;"><span>A</span></div>
+                <div class="bar" style="height: 70%; animation-delay: .2s;"><span>B</span></div>
+                <div class="bar" style="height: 100%; animation-delay: .4s;"><span>C</span></div>
+                <div class="bar" style="height: 40%; animation-delay: .6s;"><span>D</span></div>
+                <div class="bar" style="height: 60%; animation-delay: .8s;"><span>E</span></div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Core concepts that appear in the demo</h2>
+            <div class="curves">
+                <article class="curve-card">
+                    <h3>Law of large numbers</h3>
+                    <p>The sample average drifts toward the true mean as you drop more balls. The animation labels the running mean so you can watch it converge.</p>
+                </article>
+                <article class="curve-card">
+                    <h3>Central limit theorem</h3>
+                    <p>Even if the pegs send the balls randomly, the resulting distribution looks bell-shaped. This is why histograms often tend toward normal curves.</p>
+                </article>
+                <article class="curve-card">
+                    <h3>Variance intuition</h3>
+                    <p>Variance is the average squared distance from the mean. In the visualization, it controls how wide the histogram appears.</p>
+                </article>
+            </div>
+            <div class="steps">
+                Workflow hint: drop a handful of samples → pause and note which bar is tallest → predict the next relative ordering → release a stream and check the histogram’s new shape.
+            </div>
+        </section>
+    </main>
+</body>
+</html>
